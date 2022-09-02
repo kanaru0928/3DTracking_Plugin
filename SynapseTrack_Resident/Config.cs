@@ -10,6 +10,10 @@ namespace SynapseTrack_Resident
 {
     class Config
     {
+        public static readonly int AverageCount = 3;
+
+        public readonly static int[] ROOT_INDEX = new int[] { 16, 15, 1, 2, 3, 1, 5, 6, 14, 8, 9, 14, 11, 12, -1, 14, 1, 4, 7, 10, 13 };
+
         public static readonly Dictionary<string, string> ROOT = new Dictionary<string, string>
         {
             {"上半身2", "上半身"},
@@ -21,9 +25,11 @@ namespace SynapseTrack_Resident
             {"右ひざD", "右足D"},
             {"右足首D", "右ひざD"},
 
+            {"左肩", "上半身2"},
             {"左腕", "左肩"},
             {"左ひじ", "左腕"},
             {"左手首", "左ひじ"},
+            {"右肩", "上半身2"},
             {"右腕", "右肩"},
             {"右ひじ", "右腕"},
             {"右手首", "右ひじ"},
@@ -73,17 +79,43 @@ namespace SynapseTrack_Resident
             //{"左手首", 17 },
         };
 
-        public static Dictionary<string, Vector3> root_abs_angle = new Dictionary<string, Vector3>
+        public static Dictionary<string, Quaternion> root_abs_angle = new Dictionary<string, Quaternion>
         {
-            {"右足D", new Vector3(0, -1, 0)},
-            {"左足D", new Vector3(0, -1, 0) },
-            {"左肩", new Vector3(1, 0, 0)},
-            {"右肩", new Vector3(-1, 0, 0)},
-            {"左肩P", new Vector3(1, 0, 0)},
-            {"右肩P", new Vector3(-1, 0, 0)},
+            {"右足D", Quaternion.RotationAxis(Vector3.UnitZ, (float)Math.PI / 2) /*new Vector3(0, -1, 0)*/},
+            {"左足D", Quaternion.RotationAxis(Vector3.UnitZ, (float)Math.PI / 2) /*new Vector3(0, -1, 0)*/ },
+            //{"左肩", Quaternion.Identity /*new Vector3(1, 0, 0)*/},
+            //{"右肩", Quaternion.RotationAxis(Vector3.UnitZ, (float)Math.PI) /*new Vector3(-1, 0, 0)*/},
+            //{"左肩P", Quaternion.Identity /*new Vector3(1, 0, 0)*/},
+            //{"右肩P", Quaternion.RotationAxis(Vector3.UnitZ, (float)Math.PI) /*new Vector3(-1, 0, 0)*/},
             //{"左肩P", new Vector3(0, (float)Math.PI, 0)},
             //{"右肩P", new Vector3(0, (float)Math.PI, -(float)Math.PI)},
-            {"上半身", new Vector3(0, 1, 0)},
+            {"上半身", Quaternion.RotationAxis(Vector3.UnitZ, -(float)Math.PI / 2) /*new Vector3(0, 1, 0)*/},
+        };
+
+        public static Dictionary<string, Vector3> defaultVector = new Dictionary<string, Vector3>
+        {
+            {"上半身", new Vector3(0, 0.9966629f, -0.08162775f)},
+            {"上半身2", new Vector3(0, 1, 0)},
+            {"首", new Vector3(0, 1, 0)},
+            {"頭", new Vector3(0, 1, 0)},
+
+            {"左足D", new Vector3(0, -1, 0)},
+            {"左ひざD", new Vector3(0, -1, 0)},
+            {"左足首D", new Vector3(0, -0.47781744f, -0.87845916f)},
+            {"右足D", new Vector3(0, -1, 0)},
+            {"右ひざD", new Vector3(0, -1, 0)},
+            {"右足首D", new Vector3(0, -0.47781744f, -0.87845916f)},
+
+            {"左肩", new Vector3(1, 0, 0)},
+            {"左肩P", new Vector3(1, 0, 0)},
+            {"左腕", new Vector3(1, 0, 0)},
+            {"左ひじ", new Vector3(1, 0, 0)},
+            {"左手首", new Vector3(1, 0, 0)},
+            {"右肩", new Vector3(-1, 0, 0)},
+            {"右肩P", new Vector3(-1, 0, 0)},
+            {"右腕", new Vector3(-1, 0, 0)},
+            {"右ひじ", new Vector3(-1, 0, 0)},
+            {"右手首", new Vector3(-1, 0, 0)},
         };
 
         public static HashSet<string> negative_joints = new HashSet<string>

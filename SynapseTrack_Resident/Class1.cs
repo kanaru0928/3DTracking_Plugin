@@ -10,14 +10,21 @@ using DxMath;
 
 namespace SynapseTrack_Resident
 {
-    public class Class1 : IResidentPlugin
+    /// <summary>
+    /// プラグインのエントリーポイントとなるクラス
+    /// </summary>
+    /// <remarks>
+    /// Interfaceの実装は<see href="https://sites.google.com/site/mikumikumoving/%E3%83%9E%E3%83%8B%E3%83%A5%E3%82%A2%E3%83%AB/17-%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3">MMM公式ドキュメント</see>を参照
+    /// </remarks>
+    public class Class1 : IResidentPlugin, IHaveUserControl
     {
         private const int IMAGE_SIZE = 32;
         private const int SMALL_SIZE = 20;
 
+        public UserControl1 userControl;
         private Image _image;
         private Image _small_image;
-        JointProcessing processing;
+        ProcessingMaster processing;
 
         public Class1(){
         }
@@ -25,7 +32,6 @@ namespace SynapseTrack_Resident
         public void Initialize()
         {
             CreateIcon();
-            processing = new JointProcessing();
         }
 
         public void CreateIcon()
@@ -66,6 +72,18 @@ namespace SynapseTrack_Resident
 
         public Image SmallImage { get { return _small_image; } }
 
+        public UserControl CreateControl()
+        {
+            userControl = new UserControl1();
+            userControl.UpdateHundler += UserControl_UpdateHundler;
+            return userControl;
+        }
+
+        private void UserControl_UpdateHundler(object sender, EventArgs e)
+        {
+            userControl.UpdateModel(Scene);
+        }
+
         public void Update(float frame, float diff)
         {
             processing.SetJoints(this);
@@ -73,18 +91,30 @@ namespace SynapseTrack_Resident
 
         public void Enabled()
         {
+            //foreach (var models in Scene.Models)
+            //{
+            //    Bone b = models.Bones["上半身"];
+            //    MessageBox.Show($"上半身\n" +
+            //        $"x: {b.LocalAxisX}\n" +
+            //        $"y: {b.LocalAxisY}\n" +
+            //        $"z: {b.LocalAxisZ}");
+            //}
+
+            processing = new ProcessingMaster();
+
+            userControl.UpdateModel(Scene);
             processing.ConnectSocket();
         }
 
         public void Disabled()
         {
-            processing.DisconnectSocket();
+            processing.Dispose();
             processing.showed = false;
         }
 
         public void Dispose()
         {
-            processing.Dispose();
+            processing?.Dispose();
         }
     }
 }
