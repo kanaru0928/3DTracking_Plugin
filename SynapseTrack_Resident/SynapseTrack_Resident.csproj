@@ -70,13 +70,41 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="JointInfo.cs" />
-    <Compile Include="JointProcessing.cs" />
+    <Compile Include="DrawProcessing.cs" />
+    <Compile Include="PreProcessing.cs" />
+    <Compile Include="ProcessingMaster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Socket.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="UserControl1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl1.Designer.cs">
+      <DependentUpon>UserControl1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.png" />
     <Content Include="Setting.png" />
+    <EmbeddedResource Include="UserControl1.resx">
+      <DependentUpon>UserControl1.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(TargetPath) I:\KANARU_FOLDER\MikuMikuMoving64_v1292\Plugins\$(TargetName)$(TargetExt) /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
