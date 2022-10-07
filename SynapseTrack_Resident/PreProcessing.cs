@@ -92,6 +92,34 @@ namespace SynapseTrack_Resident
             }
         }
 
+        static float GetHipAngle(Vector3 vec)
+        {
+            return (float)Math.Atan2(vec.Z, vec.X);
+        }
+
+        public static JointInfo CalcRootRot(JointInfo joint)
+        {
+            for(int i = 0; i < JointInfo.DEFAULT_NUM_PERSON; i++)
+            {
+                joint.root_rot[i] = GetHipAngle(Utils.ArrayToVector(joint.joints[i][11]));
+            }
+            return joint;
+        }
+
+        public static JointInfo RotateJoints(JointInfo joints)
+        {
+            for(int i = 0; i < JointInfo.DEFAULT_NUM_PERSON; i++)
+            {
+                for(int j = 0; j < JointInfo.NUM_JOINT; j++)
+                {
+                    Quaternion q = Quaternion.RotationAxis(Vector3.UnitY, joints.root_rot[i]);
+                    Vector4 angle = Vector4.Transform(new Vector4(Utils.ArrayToVector(joints.joints[i][j]), 0), q);
+                    joints.joints[i][j] = Utils.VectorToArray(Utils.DownDimention(angle));
+                }
+            }
+            return joints;
+        }
+
         public JointInfo GetJoints(Class1 sender)
         {
             JointInfo ret = lastVelocities.GetDisplacementAt(DateTime.Now) + lastAngles;

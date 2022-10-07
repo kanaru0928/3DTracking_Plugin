@@ -8,6 +8,9 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Threading;
+using System.Security.Authentication;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SynapseTrack_Resident
 {
@@ -25,7 +28,7 @@ namespace SynapseTrack_Resident
         const int RETURN_SIZE = 2048;
 
         TcpClient client;
-        NetworkStream stream;
+        SslStream stream;
         bool watching = false;
 
         public delegate void GotJointsEventHandler(object sender, GotJointsEventArgs e);
@@ -45,7 +48,29 @@ namespace SynapseTrack_Resident
         {
             client = new TcpClient();
             client.Connect(HOST, PORT);
-            stream = client.GetStream();
+
+            stream = new SslStream(
+                client.GetStream(),
+                false,
+                new RemoteCertificateValidationCallback(ValidateServerCertificate),
+                null
+            );
+            try
+            {
+                stream.AuthenticateAsClient(HOST);
+            }
+            catch(AuthenticationException e)
+            {
+                Console.WriteLine("認証失敗 {0}", e.Message);
+                client.Close();
+            }
+        }
+
+        private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            if (sslPolicyErrors == SslPolicyErrors.None) return true;
+            Console.WriteLine("Certificate error: {0}", sslPolicyErrors);
+            return true;
         }
 
         /// <summary>
@@ -58,14 +83,16 @@ namespace SynapseTrack_Resident
             stream.Write(startId, 0, startId.Length);
             Thread task = new Thread(() =>
             {
-                while (stream.CanRead && watching)
+                int bytes = -1;
+                do
                 {
                     byte[] streamReturn = new byte[RETURN_SIZE];
-                    stream.Read(streamReturn, 0, streamReturn.Length);
+                    bytes = stream.Read(streamReturn, 0, streamReturn.Length);
                     GotJointsEventArgs args = new GotJointsEventArgs();
                     args.JointInfo = JointInfo.FromBytes(streamReturn);
                     OnGotJoints(args);
-                }
+                } while (bytes != 0 && watching);
+
                 MessageBox.Show("Stream closed");
                 stream.Close();
                 client.Close();

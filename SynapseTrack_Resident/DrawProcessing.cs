@@ -117,8 +117,13 @@ namespace SynapseTrack_Resident
 
             foreach (var model in sender.Scene.Models)
             {
-                if (pidx >= modelInfo.Count) break;
+                if (pidx >= modelInfo.Count) continue;
                 int motion = sender.userControl.bindingModels[pidx].MotionId;
+
+                if(motion >= 0 && motion < num_person && jointInfo.joints[motion].SequenceEqual(JointInfo.Identity.joints[0]))
+                {
+                    continue;
+                }
 
                 Bone rootBone = model.Bones["全ての親"];
 
@@ -136,8 +141,8 @@ namespace SynapseTrack_Resident
 
                         if (motion < 0 || motion >= num_person)
                         {
-                            data.Rotation = Quaternion.Identity;
-                            currentBone.Layers[0].CurrentLocalMotion = data;
+                            //data.Rotation = Quaternion.Identity;
+                            //currentBone.Layers[0].CurrentLocalMotion = data;
                             continue;
                         }
 
@@ -186,9 +191,9 @@ namespace SynapseTrack_Resident
 
                     if (motion < 0 || motion >= num_person)
                     {
-                        data.Rotation = Quaternion.Identity;
-                        data.Move = Vector3.Zero;
-                        rootBone.Layers[0].CurrentLocalMotion = data;
+                        //data.Rotation = Quaternion.Identity;
+                        //data.Move = Vector3.Zero;
+                        //rootBone.Layers[0].CurrentLocalMotion = data;
                         continue;
                     }
                     float[] move_f = root_pos[motion];
@@ -196,7 +201,7 @@ namespace SynapseTrack_Resident
                     //sender.userControl.PrintLine($"[{motion}]RootPos:{Utils.ArrayToVector(root_pos[motion])}");
 
                     Vector3 move = new Vector3(move_f[0] / 126, 0, move_f[2] / 126 + sender.userControl.offsetZ);
-                    Quaternion rot = Quaternion.RotationAxis(Vector3.UnitY, root_rot[motion]);
+                    Quaternion rot = Quaternion.RotationAxis(Vector3.UnitY, -root_rot[motion]);
                     if (true)
                     {
                         data.Rotation = rot;

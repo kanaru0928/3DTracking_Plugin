@@ -52,6 +52,8 @@ namespace SynapseTrack_Resident
         {
             //JointInfo joints = preProcessing.GetJoints(sender);
             JointInfo joints = socket.RequestJoint();
+            joints = PreProcessing.CalcRootRot(joints);
+            joints = PreProcessing.RotateJoints(joints);
             drawProcessing.SetJoints1(sender, joints);
         }
 
