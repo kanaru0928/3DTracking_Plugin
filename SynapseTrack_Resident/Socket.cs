@@ -23,7 +23,7 @@ namespace SynapseTrack_Resident
     /// </summary>
     class Socket : IDisposable
     {
-        const string HOST = "127.0.0.1";
+        const string HOST = "34.146.85.33";
         const int PORT = 8111;
         const int RETURN_SIZE = 2048;
 
@@ -58,6 +58,9 @@ namespace SynapseTrack_Resident
             try
             {
                 stream.AuthenticateAsClient(HOST);
+
+                byte[] buf = Encoding.UTF8.GetBytes("DRAW");
+                stream.Write(buf, 0, buf.Length);
             }
             catch(AuthenticationException e)
             {
