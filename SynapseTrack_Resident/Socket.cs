@@ -18,12 +18,24 @@ namespace SynapseTrack_Resident
         public JointInfo JointInfo;
     }
 
+    enum ZoneList
+    {
+        Tokyo, Iowa, Local, Desktop
+    }
+
     /// <summary>
     /// TCP通信を行うクラス
     /// </summary>
     class Socket : IDisposable
     {
-        const string HOST = "34.146.85.33";
+        readonly Dictionary<ZoneList, string> host = new Dictionary<ZoneList, string>(){
+            { ZoneList.Tokyo,   "34.146.85.33"  },
+            { ZoneList.Iowa,    "34.67.250.221" },
+            { ZoneList.Local,   "127.0.0.1" },
+            { ZoneList.Desktop, "192.168.1.35" }
+        };
+
+        const ZoneList ZONE = ZoneList.Tokyo;
         const int PORT = 8111;
         const int RETURN_SIZE = 2048;
 
@@ -47,7 +59,7 @@ namespace SynapseTrack_Resident
         public Socket()
         {
             client = new TcpClient();
-            client.Connect(HOST, PORT);
+            client.Connect(host[ZONE], PORT);
 
             stream = new SslStream(
                 client.GetStream(),
@@ -57,7 +69,7 @@ namespace SynapseTrack_Resident
             );
             try
             {
-                stream.AuthenticateAsClient(HOST);
+                stream.AuthenticateAsClient(host[ZONE]);
 
                 byte[] buf = Encoding.UTF8.GetBytes("DRAW");
                 stream.Write(buf, 0, buf.Length);
