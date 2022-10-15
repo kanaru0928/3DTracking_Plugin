@@ -184,6 +184,8 @@ namespace SynapseTrack_Resident
                     }
                 }
 
+                float[] move_f;
+
                 // ルートボーン移動・回転
                 if (rootBone != null)
                 {
@@ -196,7 +198,7 @@ namespace SynapseTrack_Resident
                         //rootBone.Layers[0].CurrentLocalMotion = data;
                         continue;
                     }
-                    float[] move_f = root_pos[motion];
+                    move_f = root_pos[motion];
 
                     //sender.userControl.PrintLine($"[{motion}]RootPos:{Utils.ArrayToVector(root_pos[motion])}");
 
@@ -220,6 +222,21 @@ namespace SynapseTrack_Resident
                         //MessageBox.Show($"{motion}: {root_rot[motion]}rad");
                     }
 
+                }
+                else
+                {
+                    throw new Exception("");
+                }
+
+                Bone center = model.Bones["センター"];
+                if (center != null)
+                {
+                    float leg_length = center.InitialPosition.Y;
+
+                    MotionData data = center.CurrentLocalMotion;
+                    Vector3 move = new Vector3(0, move_f[1] / 126 - leg_length + 8.0f, 0);
+                    data.Move = move;
+                    center.Layers[0].CurrentLocalMotion = data;
                 }
 
                 pidx++;
