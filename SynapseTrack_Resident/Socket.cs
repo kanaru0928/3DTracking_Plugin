@@ -20,7 +20,7 @@ namespace SynapseTrack_Resident
 
     enum ZoneList
     {
-        Tokyo, Iowa, Local, Desktop
+        Tokyo, Iowa, Seoul, Local, Desktop
     }
 
     /// <summary>
@@ -31,8 +31,9 @@ namespace SynapseTrack_Resident
         readonly Dictionary<ZoneList, string> host = new Dictionary<ZoneList, string>(){
             { ZoneList.Tokyo,   "34.146.85.33"  },
             { ZoneList.Iowa,    "34.67.250.221" },
+            { ZoneList.Seoul,   "34.64.105.38" },
             { ZoneList.Local,   "127.0.0.1" },
-            { ZoneList.Desktop, "192.168.1.35" }
+            { ZoneList.Desktop, "192.168.1.35" },
         };
 
         const ZoneList ZONE = ZoneList.Tokyo;
